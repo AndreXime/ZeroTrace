@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+
+body {
+    background: #0f172a;
+    background: linear-gradient(
+        90deg,
+        rgba(15, 23, 42, 1) 0%,
+        rgba(30, 41, 59, 1) 5%,
+        rgba(30, 41, 59, 1) 95%,
+        rgba(15, 23, 42, 1) 100%
+    );
+}
+
+#root {
+    background-color: #1e293b;
+}
+
+button {
+    @apply cursor-pointer;
+}

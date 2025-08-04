@@ -1,0 +1,4 @@
+frontend/dist
+tmp
+frontend/node_modules
+*.db
