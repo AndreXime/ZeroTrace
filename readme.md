@@ -1,6 +1,6 @@
 # GhostChat
 
-Uma chatrom anonima que os usuarios podem trocar mensagens e arquivos sem passar pelo servidor por meio de WebRTC
+Um chat anónimo que os usuarios podem trocar mensagens e arquivos sem passar pelo servidor por meio de WebRTC
 
 ## Como funciona
 
@@ -21,16 +21,8 @@ Após a troca de sinalização:
 -   Os navegadores tentam se conectar diretamente usando **WebRTC**.
 -   Se conseguirem, a comunicação (mensagens, arquivos, etc) acontece **direto entre eles**, **sem passar pelo servidor**.
 
-## Tecnologias utilizadas
 
-**Backend (Go):**
+## Preview
 
--   `gorilla/websocket` para WebSocket
--   `API REST` para criar/entrar em salas
--   `Banco SQLite` para controlar número de peers por sala
+https://github.com/user-attachments/assets/8de32409-dd93-4f53-af40-112fb9ca08f8
 
-**Frontend (TypeScript + React):**
-
--   `RTCPeerConnection` para WebRTC
--   `RTCDataChannel` para enviar mensagens
--   `WebSocket` para sinalização
