@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"signaling-mvp/internal/database" // <-- Importe
-	"signaling-mvp/internal/types"
+	"GhostChat/internal/database" // <-- Importe
+	"GhostChat/internal/types"
 
 	"github.com/gorilla/websocket"
 )

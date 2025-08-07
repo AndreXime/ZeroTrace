@@ -5,7 +5,7 @@ tmp_dir = "tmp"
   cmd = "clear && cd frontend && npm run build && cd .. && go build -o tmp/main ."
   bin = "tmp/main"
   full_bin = "tmp/main"
-  include_ext = ["go","tsx","ts",".css"]
+  include_ext = ["go","tsx","ts","css","html"]
   exclude_dir = ["frontend/dist", "frontend/node_modules"]
 
 [log]

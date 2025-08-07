@@ -1,4 +1,4 @@
-module signaling-mvp
+module GhostChat
 
 go 1.21
 

@@ -14,8 +14,6 @@ export const CHUNK_SIZE = 1000 * 1024; // 1 MB
 export async function sendFile(file: File, dc: RTCDataChannel, addLogEntry: (msg: string) => void): Promise<void> {
     if (!file || !dc) return;
 
-    addLogEntry(`Eu: Enviando arquivo: ${file.name}`);
-
     // Envia os metadados
     dc.send(
         JSON.stringify({

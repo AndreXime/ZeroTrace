@@ -7,8 +7,8 @@ import (
 	"strings" // <-- Adicionada importação
 	"time"    // <-- Adicionada importação
 
-	"signaling-mvp/internal/config"
-	"signaling-mvp/internal/database"
+	"GhostChat/internal/config"
+	"GhostChat/internal/database"
 )
 
 func respondJSON(w http.ResponseWriter, v interface{}) {
@@ -18,7 +18,7 @@ func respondJSON(w http.ResponseWriter, v interface{}) {
 
 func CreateRoom(w http.ResponseWriter, r *http.Request) {
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	const idLength = 8
+	const idLength = 15
 	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
 	var roomId string
 

@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3" // Import anônimo para o driver
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var DB *sql.DB

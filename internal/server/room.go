@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"signaling-mvp/internal/database" // <-- Importe
-	"signaling-mvp/internal/types"
+	"GhostChat/internal/database" // <-- Importe
+	"GhostChat/internal/types"
 )
 
 // O Room struct agora representa apenas as conexões ativas

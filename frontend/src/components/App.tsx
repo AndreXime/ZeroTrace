@@ -21,10 +21,17 @@ export default function App() {
     }).current;
 
     useEffect(() => {
-        if (appState === 'idle') return;
+        // Se estamos no estado 'idle', não há conexão para gerenciar.
+        // A função de limpeza do useEffect anterior (caso o roomId mude)
+        // cuidará de fechar quaisquer conexões ativas.
+        if (appState === 'idle') {
+            return;
+        }
 
+        // Flag para evitar atualizações de estado em um componente desmontado
         let isMounted = true;
 
+        // Inicia uma nova conexão
         const ws = new WebSocket(getSignalingUrl(roomId));
         wsRef.current = ws;
 
@@ -33,16 +40,23 @@ export default function App() {
             dc.bufferedAmountLowThreshold = CHUNK_SIZE;
 
             dc.onopen = () => {
-                if (isMounted) connect();
+                if (isMounted) {
+                    connect();
+                }
             };
 
             dc.onclose = () => {
-                addLogEntry('Canal de dados fechado.');
+                if (isMounted) {
+                    // A mensagem agora só deve aparecer se o canal fechar inesperadamente
+                    addLogEntry('Canal de dados fechado.');
+                }
             };
 
             dc.onerror = (err) => {
-                console.error('Erro no canal de dados:', err);
-                addLogEntry('Erro no canal de dados.');
+                if (isMounted) {
+                    console.error('Erro no canal de dados:', err);
+                    addLogEntry('Erro no canal de dados.');
+                }
             };
 
             dc.onmessage = (e) => {
@@ -56,9 +70,6 @@ export default function App() {
                         } else if (message.type === 'file-meta' && message.payload?.name && message.payload?.size) {
                             fileReceiver.metadata = message.payload;
                             fileReceiver.chunks = [];
-                            if (fileReceiver.metadata) {
-                                addLogEntry(`Peer: Recebendo arquivo: ${fileReceiver.metadata.name}`);
-                            }
                         }
                     } catch (err) {
                         console.warn('Mensagem JSON inválida:', e.data);
@@ -122,23 +133,29 @@ export default function App() {
 
         setupConnection();
 
+        // A função de limpeza agora só é chamada quando o componente é
+        // desmontado ou quando o roomId/isRoomCreator muda.
         return () => {
             isMounted = false;
-
-            if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
-                ws.close();
-            }
-
+            ws.close();
             pcRef.current?.close();
-            dcRef.current?.close?.();
+            dcRef.current?.close();
+            wsRef.current = null;
+            pcRef.current = null;
+            dcRef.current = null;
         };
-    }, [appState, roomId, isRoomCreator, connect, addLogEntry]);
+    }, [roomId, isRoomCreator, connect, addLogEntry]);
 
     const handleSendMessage = (message: string) => {
+        if (!message.trim()) return;
+
+        addLogEntry(`Eu: ${message}`);
+
         const dc = dcRef.current;
-        if (message && dc && dc.readyState === 'open') {
+        if (dc && dc.readyState === 'open') {
             dc.send(JSON.stringify({ type: 'chat', payload: message }));
-            addLogEntry(`Eu: ${message}`);
+        } else {
+            addLogEntry('Falha ao enviar. Tente novamente.');
         }
     };
 
@@ -146,14 +163,23 @@ export default function App() {
         const dc = dcRef.current;
         if (file && dc && dc.readyState === 'open') {
             await sendFile(file, dc, addLogEntry);
+        } else {
+            addLogEntry(`Erro: Não foi possível enviar o arquivo ${file.name}.`);
         }
     };
 
-    if (appState === 'idle') return <IdleView />;
-    if (appState === 'waiting') return <WaitingView />;
-    if (appState === 'connected') {
-        return <ChatView onSendMessage={handleSendMessage} onSendFile={handleSendFile} />;
-    }
+    const ActiveState = () => {
+        switch (appState) {
+            case 'connected':
+                return <ChatView onSendMessage={handleSendMessage} onSendFile={handleSendFile} />;
 
-    return null;
+            case 'waiting':
+                return <WaitingView />;
+
+            default:
+                return <IdleView />;
+        }
+    };
+
+    return <ActiveState />;
 }

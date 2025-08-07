@@ -1,13 +1,13 @@
 package main
 
 import (
+	"GhostChat/internal/database"
+	"GhostChat/internal/server"
 	"embed"
 	"io/fs"
 	"log"
 	"net/http"
 	"path"
-	"signaling-mvp/internal/database"
-	"signaling-mvp/internal/server"
 )
 
 //go:embed frontend/dist/**

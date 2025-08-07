@@ -8,15 +8,13 @@ interface AppStore {
     roomId: string;
     isRoomCreator: boolean;
     log: string[];
-    inputRoomId: string;
     error: string | null;
 
     // Actions
     startCreateRoom: () => Promise<void>;
-    startJoinRoom: () => void;
+    startJoinRoom: (roomId: string) => void;
     connect: () => void;
     addLogEntry: (entry: string) => void;
-    setInputRoomId: (id: string) => void;
     reset: () => void;
 }
 
@@ -26,10 +24,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     roomId: '',
     isRoomCreator: false,
     log: [],
-    inputRoomId: '',
     error: null,
-
-    setInputRoomId: (id) => set({ inputRoomId: id }),
 
     startCreateRoom: async () => {
         set({ error: null });
@@ -50,9 +45,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
         }
     },
 
-    startJoinRoom: async () => {
-        const { inputRoomId } = get();
-        if (inputRoomId.trim() === '') {
+    startJoinRoom: async (roomId: string) => {
+        if (roomId.trim() === '') {
             return;
         }
 
@@ -64,7 +58,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ roomId: inputRoomId }),
+                body: JSON.stringify({ roomId: roomId }),
             });
 
             if (!response.ok) {
@@ -76,7 +70,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
             // Se a resposta for OK, então mudamos o estado
             set({
-                roomId: inputRoomId,
+                roomId: roomId,
                 isRoomCreator: false,
                 appState: 'waiting',
             });
@@ -97,7 +91,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
             roomId: '',
             isRoomCreator: false,
             log: [],
-            inputRoomId: '',
             error: null,
         }),
 }));
